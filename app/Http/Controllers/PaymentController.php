@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -15,7 +17,7 @@ class PaymentController extends Controller
     public function processPayment(Request $request, Order $order)
     {
         $request->validate([
-            'amount_paid' => 'required|numeric|min:' . $order->total_amount,
+            'amount_paid' => 'required|numeric|min:' . $order->total_amount . '|max:' . $order->total_amount,
         ]);
 
         if ($order->payment_status === 'Paid') {
@@ -31,6 +33,15 @@ class PaymentController extends Controller
         // Update Order Status
         $order->update(['payment_status' => 'Paid']);
 
-        return redirect()->route('payments.history')->with('success', 'Payment processed.');
+        return redirect()->route('payments.history')->with('success', 'Payment processed successfully.');
+    }
+
+    public function showPaymentHistory()
+    {
+        $orders = Order::with('riceItem', 'payment')
+            ->where('payment_status', 'Paid')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+        return view('payments.history', compact('orders'));
     }
 }

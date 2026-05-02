@@ -1,43 +1,56 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - Rice Management System</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rice Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="font-sans text-gray-900 antialiased flex h-screen bg-gray-100 items-center justify-center">
-
-    <div class="w-full max-w-sm bg-white p-8 rounded-xl shadow-md border border-gray-200">
+<body class="bg-gradient-to-br from-white to-sky-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-96">
         <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Rice System</h1>
-            <p class="text-sm text-gray-500 mt-1">Sign in to your account</p>
+            <h1 class="text-2xl font-bold text-gray-800">Rice Shop</h1>
+            <p class="text-gray-500 text-sm mt-1">Login to your account</p>
         </div>
 
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+        <!-- Pass and Email -->
+        <div class="bg-sky-50 border border-sky-200 rounded-lg p-3 mb-4">
+            <p class="text-xs text-sky-700">Email: <span class="font-mono font-bold">admin@gmail.com</span></p>
+            <p class="text-xs text-sky-700">Password: <span class="font-mono font-bold">12345</span></p>
+        </div>
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-5">
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
             @csrf
-
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <input id="email" type="email" name="email" value="admin@example.com" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 px-3 border">
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+                <input type="email" name="email" value="{{ old('email') }}" required 
+                    placeholder="admin@gmail.com"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500">
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input id="password" type="password" name="password" value="password" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2 px-3 border">
-                <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500 text-sm" />
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                <input type="password" name="password" required 
+                    placeholder="•••••"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-sky-500">
+                @error('password')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <div class="pt-2">
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Log in
-                </button>
-            </div>
+            <button type="submit" class="w-full bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 transition">
+                Login
+            </button>
         </form>
     </div>
-
 </body>
 </html>

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class RiceItemController extends Controller
 {
-
     public function index()
     {
         $rice_items = RiceItem::all();
@@ -32,25 +31,32 @@ class RiceItemController extends Controller
         return redirect()->route('rice.index')->with('success', 'Rice item added successfully.');
     }
 
-    public function show(string $id)
+    public function edit(RiceItem $rice)
     {
-        //
+        return view('rice.edit', compact('rice'));
     }
 
-
-    public function edit(string $id)
+    public function update(Request $request, RiceItem $rice)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price_per_kg' => 'required|numeric|min:0',
+            'stock_quantity' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        $rice->update($validated);
+        return redirect()->route('rice.index')->with('success', 'Rice item updated successfully.');
     }
 
-
-    public function update(Request $request, string $id)
+    public function destroy(RiceItem $rice)
     {
-        //
-    }
-
-    public function destroy(string $id)
-    {
-        //
+        // Check if rice item has orders
+        if ($rice->orders()->count() > 0) {
+            return redirect()->route('rice.index')->with('error', 'Cannot delete rice item with existing orders.');
+        }
+        
+        $rice->delete();
+        return redirect()->route('rice.index')->with('success', 'Rice item deleted successfully.');
     }
 }

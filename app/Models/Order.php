@@ -8,11 +8,13 @@ class Order extends Model
 {
     protected $fillable = ['rice_item_id', 'quantity', 'total_amount', 'payment_status'];
 
-    public function riceItem() {
+    public function riceItem() 
+    {
         return $this->belongsTo(RiceItem::class);
     }
 
-    public function payment() {
+    public function payment() 
+    {
         return $this->hasOne(Payment::class);
     }
 }
